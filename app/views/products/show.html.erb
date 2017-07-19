@@ -1,0 +1,84 @@
+<div class="page-header">
+  <h1><%= @product.title %>
+    <% if @product.ave_review.present? %>
+        <!-- Create the star ratings -->
+        <small class="rating">
+          <% ave = @product.ave_review %>
+          <% ave.times do %>
+              &bigstar;
+          <% end %>
+          <% empty_star = 5 - ave %>
+          <% empty_star.times do %>
+              &star;
+          <% end %>
+        </small>
+    <% end %>
+  </h1>
+  <p>Sold by <%= link_to "Cookie Monster", '#' %>.</p>
+  <p>
+
+    <%= link_to "Edit This Listing", "/products/#{@product.id}/edit" %>
+    |
+    <%= link_to "Delete This Listing", "/products/#{@product.id}", method: 'delete', data: { confirm: "Are you crazy?" } %>
+  </p>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+
+    <% photo_url = @product.photo_url %>
+    <% if photo_url.blank? %>
+    <%   photo_url = "http://via.placeholder.com/350x350?text=no+photo" %>
+    <% end %>
+
+    <%= image_tag photo_url,
+                  class: 'img-responsive' %>
+  </div>
+
+  <div class="col-sm-8">
+    <p class="price"><%= number_to_currency(@product.price / 100.0) %>
+      <%= link_to "Buy Now", '#', class: "btn btn-lg btn-success" %>
+    </p>
+
+
+    <p>
+      <%= @product.description %>
+    </p>
+
+    <hr>
+
+
+    <%= form_tag("/reviews", method: 'post') do %>
+      <h3>Add Your Review</h3>
+      <p>
+        <%= label_tag :rating %>
+        <%= select_tag :rating, options_for_select([1,2,3,4,5]), prompt: "Select 1 to 5...", class: '' %>
+      </p>
+      <p><%= text_area_tag :content, "", rows: 3, class: 'form-control' %></p>
+        <%= hidden_field_tag 'product_id', @product.id  %>
+        <%= submit_tag "Submit", class: 'btn btn-primary' %>
+    <% end %>
+
+    <hr>
+    <h3>Reviews</h3>
+    <% if @reviews.any? %>
+        <% @reviews.each do |r| %>
+            <!-- Create the star ratings -->
+            <p>
+              <% fill_star = r.rating %>
+              <% fill_star.times do %>
+                  &bigstar;
+              <% end %>
+              <% empty_star = 5 - r.rating %>
+              <% empty_star.times do %>
+                  &star;
+              <% end %>
+            </p>
+            <p>
+              <%= r.content %>
+            </p>
+        <% end %>
+    <% end %>
+  </div>
+
+</div>

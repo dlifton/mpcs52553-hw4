@@ -1,0 +1,50 @@
+<div class="row">
+
+  <% @products.each do |p| %>
+
+  <!-- Product Thumbnail -->
+  <div class="col-sm-6 col-md-3">
+    <div class="thumbnail">
+
+      <% photo_url = p.photo_url %>
+      <% if photo_url.blank? %>
+      <%   photo_url = "http://via.placeholder.com/350x350?text=no+photo" %>
+      <% end %>
+
+      <%= link_to image_tag(photo_url),
+                  "/products/#{p.id}",
+                  alt: "Echo Dot", class: 'img-responsive' %>
+
+      <div class="caption">
+        <h4><%= link_to p.title, "/products/#{p.id}"%></h4>
+
+        <!-- Get the reviews for specific product -->
+        <% if p.ave_review.present? %>
+            <!-- Create the star ratings -->
+            <p class="rating">
+              <% ave = p.ave_review %>
+              <% ave.times do %>
+                  &bigstar;
+              <% end %>
+              <% empty_star = 5 - ave %>
+              <% empty_star.times do %>
+                  &star;
+              <% end %>
+            </p>
+        <% end %>
+        <p><%= Review.where(product_id: p.id).count %>  reviews.</p>
+
+        <p>Sold by: <%= link_to 'Cookie Monster', '#' %></p>
+        <p>
+          <%= truncate p.description, length: 40 %>
+          <%= link_to "[see more]", '/products/1' %>
+        </p>
+        <p class="price"><%= number_to_currency(p.price / 100.0) %></p>
+        <p><a href="#" class="btn btn-primary" role="button">Buy Now</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <% end %>
+</div>
